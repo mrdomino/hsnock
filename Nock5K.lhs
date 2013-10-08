@@ -1,3 +1,5 @@
+> module Nock5K where
+
 1 Structures
 
   A noun is an atom or a cell.  An atom is any natural number.

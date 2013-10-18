@@ -1,51 +1,26 @@
 #!/usr/bin/env runhaskell
 
-import Nock5K
+import Prelude hiding (catch)
 
-import System.IO (hPrint, stderr)
-import Text.ParserCombinators.Parsec (
-  (<|>), Parser, char, digit, many1, oneOf, optionMaybe, parse, sepBy1)
+import Nock5K.Parse
+import Nock5K.Spec
 
-instance Show Noun where
-  show (Atom a) = show a
-  show x@(Cell _ _) = "[" ++ showCell x ++ "]"
-    where showCell (Cell a b) = show a ++ " " ++ showCell b
-          showCell a = show a
+import Control.Exception (SomeException, catch)
+import Control.Monad (forever)
+import System.IO (hFlush, hPrint, stderr, stdout)
+import Text.ParserCombinators.Parsec (parse)
 
-doop :: Char -> Noun -> Noun
-doop '?' = wut
-doop '+' = lus
-doop '=' = tis
-doop '/' = fas
-doop '*' = tar
-doop _ = error "op"
-
-stmt :: Parser (Maybe Char, Noun)
-stmt = do
-  o <- optionMaybe $ oneOf "?+=/*"
-  n <- noun
-  return (o, n)
-
-noun :: Parser Noun
-noun = atom <|> cell
-
-atom :: Parser Noun
-atom = many1 digit >>= (return . Atom . read)
-
-cell :: Parser Noun
-cell = do
-  char '['
-  a <- noun
-  char ' '
-  bs <- noun `sepBy1` char ' '
-  char ']'
-  return $ foldr1 Cell (a:bs)
+repl :: IO ()
+repl = forever rep
+ where
+  rep = do putStr "nock "
+           hFlush stdout
+           ln <- getLine
+           case parse noun "stdin" ln of
+             Left pe -> hPrint stderr pe
+             Right n -> ep n
+  ep n = catch ((print . nock) n)
+               (\ioe -> hPrint stderr (ioe :: SomeException) >> repl)
 
 main :: IO ()
-main = do
-  ln <- getLine
-  case (parse stmt "" ln) of
-    Left pe -> hPrint stderr pe
-    Right (o,n) -> case o of
-      Nothing -> print n
-      Just op -> print $ doop op n
+main = repl

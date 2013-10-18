@@ -20,13 +20,11 @@ doop '/' = fas
 doop '*' = tar
 doop _ = error "op"
 
-stmt :: Parser Noun
+stmt :: Parser (Maybe Char, Noun)
 stmt = do
-  op <- optionMaybe $ oneOf "?+=/*"
-  nn <- noun
-  return $ case op of
-    Nothing -> nn
-    Just o -> doop o nn
+  o <- optionMaybe $ oneOf "?+=/*"
+  n <- noun
+  return (o, n)
 
 noun :: Parser Noun
 noun = atom <|> cell
@@ -48,4 +46,6 @@ main = do
   ln <- getLine
   case (parse stmt "" ln) of
     Left pe -> hPrint stderr pe
-    Right n -> print n
+    Right (o,n) -> case o of
+      Nothing -> print n
+      Just op -> print $ doop op n

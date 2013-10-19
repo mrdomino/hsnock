@@ -25,4 +25,4 @@ repl = rep `catches` hs >> repl
          , Handler (\(e :: SomeException) -> hPrint stderr e) ]
 
 desc = "Nock 5K. ^D to exit."
-main = print desc >> repl
+main = putStrLn desc >> repl

@@ -38,7 +38,7 @@
 
   =[a a]            0
 
-> tis (a :- ap) | a == ap = Atom 0
+> tis (a :- a') | a == a' = Atom 0
 
   =[a b]            1
 

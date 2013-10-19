@@ -1,26 +1,29 @@
 #!/usr/bin/env runhaskell
-
-import Prelude hiding (catch)
+{-# LANGUAGE ScopedTypeVariables #-}
 
 import Nock5K.Parse
 import Nock5K.Spec
+import Control.Exception
+import Data.List
+import System.Exit
+import System.IO
+import System.IO.Error (isEOFError)
+import Text.ParserCombinators.Parsec
 
-import Control.Exception (SomeException, catch)
-import Control.Monad (forever)
-import System.IO (hFlush, hPrint, stderr, stdout)
-import Text.ParserCombinators.Parsec (parse)
+rep = srpa >>= print . nock
+  where
+    srpa = s >> r >>= pa
+    s = putStr "nock " >> hFlush stdout
+    r = getLine
+    pa l = case parse noun "" l of
+      Left e -> hPrint stderr e >> srpa
+      Right n -> return n
 
-repl :: IO ()
-repl = forever rep
- where
-  rep = do putStr "nock "
-           hFlush stdout
-           ln <- getLine
-           case parse noun "stdin" ln of
-             Left pe -> hPrint stderr pe
-             Right n -> ep n
-  ep n = catch ((print . nock) n)
-               (\ioe -> hPrint stderr (ioe :: SomeException) >> repl)
+repl = rep `catches` hs >> repl
+  where
+    hs = [ Handler (\(e :: IOException) ->
+             if isEOFError e then exitSuccess else hPrint stderr e)
+         , Handler (\(e :: SomeException) -> hPrint stderr e) ]
 
-main :: IO ()
-main = repl
+desc = "Nock 5K. ^D to exit."
+main = print desc >> repl

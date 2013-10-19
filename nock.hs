@@ -4,11 +4,10 @@
 import Nock5K.Parse
 import Nock5K.Spec
 import Control.Exception
-import Data.List
 import System.Exit
 import System.IO
 import System.IO.Error (isEOFError)
-import Text.ParserCombinators.Parsec
+import Text.ParserCombinators.Parsec (parse)
 
 rep = srpa >>= print . nock
   where

@@ -9,4 +9,4 @@ cabal-version:       >=1.8
 
 executable hsnock
   main-is:             nock.hs
-  build-depends:       base ==4.5.*, parsec ==3.1.*, readline
+  build-depends:       base >=4.5, parsec >=3.1, readline >=1.0

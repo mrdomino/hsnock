@@ -1,0 +1,12 @@
+name:                hsnock
+version:             0.1.0.0
+synopsis:            Nock 5K interpreter
+author:              Steven Dee
+maintainer:          mrdomino@gmail.com
+category:            Language
+build-type:          Simple
+cabal-version:       >=1.8
+
+executable hsnock
+  main-is:             nock.hs
+  build-depends:       base ==4.5.*, parsec ==3.1.*, readline

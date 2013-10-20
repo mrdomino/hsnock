@@ -1,5 +1,6 @@
 module Nock5K.Parse (noun) where
 
+import Control.Applicative ((<$>))
 import Nock5K.Spec
 import Text.ParserCombinators.Parsec
 
@@ -13,13 +14,10 @@ noun :: Parser Noun
 noun = atom <|> cell
 
 atom :: Parser Noun
-atom = many1 digit >>= (return . Atom . read)
+atom = (Atom . read) <$> many1 digit
 
 cell :: Parser Noun
-cell = do
-  char '['
-  a <- noun
-  char ' '
-  bs <- noun `sepBy1` char ' '
-  char ']'
-  return $ foldr1 (:-) (a:bs)
+cell = foldr1 (:-) <$> noun `sepBy2` char ' ' `surroundBy` "[]"
+  where
+    p `sepBy2` sep = do { a <- p; sep; bs <- p `sepBy1` sep; return (a:bs) }
+    p `surroundBy` (s:e:_) = do { char s; a <- p; char e; return a }

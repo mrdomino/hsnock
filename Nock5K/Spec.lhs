@@ -1,3 +1,4 @@
+
 > module Nock5K.Spec (Noun (Atom, (:-)), nock) where
 
 1 Structures
@@ -110,7 +111,7 @@
 
 > tar (a :- Atom 6 :- b :- c :- d) =
 >   tar (a :- Atom 2 :- (Atom 0 :- Atom 1) :- Atom 2 :- (Atom 1 :- c :- d) :-
->        (Atom 1 :- Atom 0) :- (Atom 2) :- (Atom 1 :- Atom 2 :- Atom 3) :-
+>        (Atom 1 :- Atom 0) :- Atom 2 :- (Atom 1 :- Atom 2 :- Atom 3) :-
 >        (Atom 1 :- Atom 0) :- Atom 4 :- Atom 4 :- b)
 
   *[a 7 b c]        *[a 2 b 1 c]

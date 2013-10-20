@@ -17,7 +17,7 @@ atom :: Parser Noun
 atom = (Atom . read) <$> many1 digit
 
 cell :: Parser Noun
-cell = foldr1 (:-) <$> noun `sepBy2` char ' ' `surroundBy` "[]"
+cell = foldr1 (:-) <$> (noun `sepBy2` char ' ') `surroundBy` "[]"
   where
     p `sepBy2` sep = do { a <- p; sep; bs <- p `sepBy1` sep; return (a:bs) }
     p `surroundBy` (s:e:_) = do { char s; a <- p; char e; return a }

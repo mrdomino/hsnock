@@ -7,10 +7,14 @@ import Text.Printf
 main = mapM_ (\(s,a) -> printf "%-25s: " s >> a) tests
 
 instance Arbitrary Noun where
-  arbitrary = do coin <- arbitrary
-                 if coin
-                   then (Atom . abs) <$> arbitrary
-                   else (:-) <$> arbitrary <*> arbitrary
+  arbitrary = do choose (0, 32) >>= arbD
+    where
+      arbD :: Int -> Gen Noun
+      arbD 0 = (Atom . abs) <$> arbitrary
+      arbD n = do coin <- arbitrary
+                  if coin
+                    then (Atom . abs) <$> arbitrary
+                    else (:-) <$> arbD (n - 1) <*> arbD (n - 1)
 
 parsenoun n = case parse noun "" n of
   Left e -> error "parse"
@@ -24,11 +28,10 @@ prop_dec a' = nock (Atom (a + 1) :- dec) == Atom a
     dec = parsenoun ds
     a = abs a'
 
-prop_6_is_if a' b' = nock (ifs $ Atom 0) == Atom (a + 1) && nock (ifs $ Atom 1) == Atom b
+prop_6_is_if a' b = nock (ifs $ Atom 0) == Atom (a + 1) && nock (ifs $ Atom 1) == b
   where
-    ifs c = (Atom a :- Atom 6 :- (Atom 1 :- c) :- (Atom 4 :- Atom 0 :- Atom 1) :- (Atom 1 :- Atom b))
+    ifs c = (Atom a :- Atom 6 :- (Atom 1 :- c) :- (Atom 4 :- Atom 0 :- Atom 1) :- (Atom 1 :- b))
     a = abs a'
-    b = abs b'
 
 tests = [("parse_show", quickCheck prop_parse_show)
         ,("decrement", quickCheck prop_dec)

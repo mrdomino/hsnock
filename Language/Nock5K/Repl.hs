@@ -1,7 +1,7 @@
-module Nock5K.Repl (repl) where
+module Language.Nock5K.Repl where
 
-import Nock5K.Parse
-import Nock5K.Spec
+import Language.Nock5K.Parse
+import Language.Nock5K.Spec
 import qualified Control.Exception as C
 import System.Console.Readline
 import Text.ParserCombinators.Parsec

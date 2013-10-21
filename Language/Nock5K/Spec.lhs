@@ -1,5 +1,5 @@
 
-> module Nock5K.Spec (Noun (Atom, (:-)), nock) where
+> module Language.Nock5K.Spec where
 
 1 Structures
 

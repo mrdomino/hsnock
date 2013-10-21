@@ -1,17 +1,38 @@
-name:                hsnock
-version:             0.1.0.0
-synopsis:            Nock 5K interpreter
-author:              Steven Dee
-maintainer:          mrdomino@gmail.com
-category:            Language
-build-type:          Simple
-cabal-version:       >=1.8
+name                 : hsnock
+version              : 0.1.1
+category             : Language
+license              : PublicDomain
+synopsis             : Nock 5K interpreter.
+author               : Steven Dee
+maintainer           : mrdomino@gmail.com
+homepage             : https://github.com/mrdomino/hsnock/
+
+build-type           : Simple
+cabal-version        : >=1.8
+data-files           : README
+
+source-repository      head
+  type               : git
+  location           : https://github.com/mrdomino/hsnock.git
+
+library
+  build-depends      : base >=4.5
+                     , parsec >=3.1
+                     , readline >=1.0
+  exposed-modules    : Language.Nock5K
+                     , Language.Nock5K.Parse
+                     , Language.Nock5K.Spec
+                     , Language.Nock5K.Repl
+
+executable             hsnock
+  main-is            : hsnock.lhs
+  build-depends      : base >=4.5
+                     , parsec >=3.1
+                     , readline >=1.0
 
 test-suite test
-  type:                exitcode-stdio-1.0
-  main-is:             test.hs
-  build-depends:       base >=4.5, parsec >=3.1, QuickCheck >=2.6
-
-executable hsnock
-  main-is:             nock.hs
-  build-depends:       base >=4.5, parsec >=3.1, readline >=1.0
+  type               : exitcode-stdio-1.0
+  main-is            : test.hs
+  build-depends      : base >=4.5
+                     , parsec >=3.1
+                     , QuickCheck >=2.6

@@ -1,6 +1,5 @@
 import Control.Applicative
-import Nock5K.Parse
-import Nock5K.Spec
+import Language.Nock5K
 import Test.QuickCheck
 import Text.ParserCombinators.Parsec (parse)
 import Text.Printf

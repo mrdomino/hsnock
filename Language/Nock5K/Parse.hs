@@ -1,7 +1,7 @@
-module Nock5K.Parse (noun) where
+module Language.Nock5K.Parse where
 
 import Control.Applicative ((<$>))
-import Nock5K.Spec
+import Language.Nock5K.Spec
 import Text.ParserCombinators.Parsec
 
 instance Show Noun where

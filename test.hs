@@ -10,10 +10,10 @@ main = mapM_ (\(s,a) -> printf "%-25s: " s >> a) tests
 instance Arbitrary Noun where
   arbitrary = do coin <- arbitrary
                  if coin
-                 then liftM (Atom . abs) arbitrary
-                 else do a <- arbitrary
-                         b <- arbitrary
-                         return $ a :- b
+                   then liftM (Atom . abs) arbitrary
+                   else do a <- arbitrary
+                           b <- arbitrary
+                           return $ a :- b
 
 prop_parse_show n = n == ps n
   where ps n = case parse noun "" (show n) of

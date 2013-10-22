@@ -1,10 +1,12 @@
 import Control.Applicative
 import Language.Nock5K
+import Test.Framework
+import Test.Framework.Providers.QuickCheck2
 import Test.QuickCheck
 import Text.ParserCombinators.Parsec (parse)
 import Text.Printf
 
-main = mapM_ (\(s,a) -> printf "%-25s: " s >> a) tests
+main = defaultMain tests
 
 instance Arbitrary Noun where
   arbitrary = choose (0, 32) >>= arbD
@@ -33,6 +35,7 @@ prop_6_is_if a' b = nock (ifs $ Atom 0) == Atom (a + 1) && nock (ifs $ Atom 1) =
     ifs c = Atom a :- Atom 6 :- (Atom 1 :- c) :- (Atom 4 :- Atom 0 :- Atom 1) :- (Atom 1 :- b)
     a = abs a'
 
-tests = [("parse_show", quickCheck prop_parse_show)
-        ,("decrement", quickCheck prop_dec)
-        ,("6_is_if", quickCheck prop_6_is_if)]
+tests = [ testProperty "parse.show" prop_parse_show
+        , testProperty "decrement"  prop_dec
+        , testProperty "6_is_if"    prop_6_is_if
+        ]

@@ -1,7 +1,10 @@
 import Control.Applicative
+import qualified Control.Exception as C
 import Language.Nock5K
 import Test.Framework
+import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2
+import Test.HUnit
 import Test.QuickCheck
 import Text.ParserCombinators.Parsec (parse)
 import Text.Printf
@@ -35,7 +38,17 @@ prop_6_is_if a' b = nock (ifs $ Atom 0) == Atom (a + 1) && nock (ifs $ Atom 1) =
     ifs c = Atom a :- Atom 6 :- (Atom 1 :- c) :- (Atom 4 :- Atom 0 :- Atom 1) :- (Atom 1 :- b)
     a = abs a'
 
-tests = [ testProperty "parse.show" prop_parse_show
-        , testProperty "decrement"  prop_dec
-        , testProperty "6_is_if"    prop_6_is_if
+test_hint_crash =
+  C.catch (nock bad `seq` assertFailure "Hint not evaluated")
+          (\e -> do let se = show (e :: C.ErrorCall)
+                    if se == "/a"
+                      then return ()
+                      else assertFailure $ "Exception: " ++ se)
+ where
+  bad = Atom 42 :- Atom 10 :- (Atom 0 :- Atom 0 :- Atom 2) :- Atom 0 :- Atom 1
+
+tests = [ testProperty "parse.show"    prop_parse_show
+        , testProperty "decrement"     prop_dec
+        , testProperty "6_is_if"       prop_6_is_if
+        , testCase     "10_hint_crash" test_hint_crash
         ]

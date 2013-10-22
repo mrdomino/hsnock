@@ -131,7 +131,7 @@
 
   *[a 10 [b c] d]   *[a 8 c 7 [0 3] d]
 
-> tar (a :- Atom 10 :- (b :- c) :- d) =
+> tar (a :- Atom 10 :- (b :- c) :- d) = tar (a :- c) `seq`
 >   tar (a :- Atom 8 :- c :- Atom 7 :- (Atom 0 :- Atom 3) :- d)
 
   *[a 10 b c]       *[a c]

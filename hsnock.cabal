@@ -1,5 +1,5 @@
 name                 : hsnock
-version              : 0.4.0
+version              : 0.4.1
 category             : Language
 license              : PublicDomain
 synopsis             : Nock 5K interpreter.

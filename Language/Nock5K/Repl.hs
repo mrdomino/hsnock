@@ -2,8 +2,8 @@ module Language.Nock5K.Repl where
 
 import Language.Nock5K.Parse
 import Language.Nock5K.Spec
-import qualified Control.Exception as C
 import System.Console.Readline
+import System.IO
 import Text.ParserCombinators.Parsec
 
 repl = do ln <- readline "nock "
@@ -12,10 +12,10 @@ repl = do ln <- readline "nock "
             Just "exit" -> return ()
             Just s -> do addHistory s
                          case parse noun "" s of
-                           Left e -> print e
+                           Left e -> (sep . show) e
                            Right n -> ep n
                          repl
-  where
-    ep n = case nock n of
-      Left e -> putStrLn $ "error: " ++ e
-      Right n -> print n
+  where ep n = case nock n of
+           Left e -> sep e
+           Right n -> print n
+        sep e = hPutStrLn stderr $ "error: " ++ e

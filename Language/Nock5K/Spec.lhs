@@ -10,8 +10,8 @@ import Control.Monad.Instances
 data Noun = Atom Integer | Noun :- Noun deriving (Eq)
 
 -- | Either a computed result or an error message.
--- E.g. 'Comp' 'Noun' is either a 'Noun' or an error.
-type Comp = Either String
+-- E.g. 'Nock' 'Noun' is either a 'Noun' or an error.
+type Nock = Either String
 \end{code}
 
 2 Reductions
@@ -20,7 +20,7 @@ type Comp = Either String
   [a b c]           [a [b c]]
 
 \begin{code}
-nock :: Noun -> Comp Noun
+nock :: Noun -> Nock Noun
 nock = tar
 infixr 1 :-
 \end{code}
@@ -34,7 +34,7 @@ infixr 1 :-
   =a                =a
 
 \begin{code}
-wut, lus, tis            :: Noun -> Comp Noun
+wut, lus, tis            :: Noun -> Nock Noun
 wut (a :- b)             = return $ Atom 0
 wut a                    = return $ Atom 1
 lus (a :- b)             = Left "+[a b]"
@@ -52,7 +52,7 @@ tis a                    = Left "=a"
   /a                /a
 
 \begin{code}
-fas                     :: Noun -> Comp Noun
+fas                     :: Noun -> Nock Noun
 fas (Atom 1 :- a)       = return a
 fas (Atom 2 :- a :- b)  = return a
 fas (Atom 3 :- a :- b)  = return b
@@ -68,7 +68,7 @@ fas a                   = Left "/a"
   *[a [b c] d]      [*[a b c] *[a d]]
 
 \begin{code}
-tar :: Noun -> Comp Noun
+tar :: Noun -> Nock Noun
 tar (a :- (b :- c) :- d) = do
   x <- tar (a :- b :- c)
   y <- tar (a :- d)

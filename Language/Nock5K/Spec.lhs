@@ -100,7 +100,7 @@
   *[a 2 b c]        *[*[a b] *[a c]]
 
 > tar (a :- Atom 2 :- b :- c) = do
->   x <- tar (a :- b) 
+>   x <- tar (a :- b)
 >   y <- tar (a :- c)
 >   tar $ x :- y
 

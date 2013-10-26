@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 module Language.Nock5K.Spec where
 import Control.Monad.Instances
 

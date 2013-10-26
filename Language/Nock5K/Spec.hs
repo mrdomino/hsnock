@@ -57,14 +57,12 @@ tis a                    = Left "=a"
   \/[(a + a + 1) b]  \/[3 \/[a b]]
   \/a                \/a
 @-}
-fas (Atom 1 :- a)                            = return a
-fas (Atom 2 :- a :- b)                       = return a
-fas (Atom 3 :- a :- b)                       = return b
-fas (Atom a :- b) | a > 2 && a `mod` 2 == 0  = do x <- fas $ Atom (a `div` 2) :- b
-                                                  fas $ Atom 2 :- x
-fas (Atom a :- b) | a > 3 && a `mod` 2 == 1  = do x <- fas $ Atom (a `div` 2) :- b
-                                                  fas $ Atom 3 :- x
-fas a                                        = Left "/a"
+fas (Atom 1 :- a)          = return a
+fas (Atom 2 :- a :- b)     = return a
+fas (Atom 3 :- a :- b)     = return b
+fas (Atom a :- b) | a > 3  = do  x <- fas $ Atom (a `div` 2) :- b
+                                 fas $ Atom (2 + (a `mod` 2)) :- x
+fas a                      = Left "/a"
 
 {-|@
   \*[a [b c] d]      [\*[a b c] \*[a d]]

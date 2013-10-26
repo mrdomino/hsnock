@@ -34,6 +34,12 @@ prop_6_is_if a' b = nock (ifs $ Atom 0) == Right (Atom (a + 1)) && nock (ifs $ A
     ifs c = Atom a :- Atom 6 :- (Atom 1 :- c) :- (Atom 4 :- Atom 0 :- Atom 1) :- (Atom 1 :- b)
     a = abs a'
 
+prop_fas_induct a' b = fas (a + a) b == fasmn 2 a b && fas (a + a + 1) b == fasmn 3 a b
+  where fas c d = nock $ d :- Atom c
+        fasmn m n c = do x <- fas n c
+                         fas m x
+        a = abs a'
+
 test_hint_crash = assert $ nock bad == Left "/a"
   where bad = pn "[42 10 [0 0 2] 0 1]"
 
@@ -43,6 +49,7 @@ test_eval_strict = assert $ nock bad == Left "/a"
 tests = [ testProperty "parse.show"    prop_parse_show
         , testProperty "decrement"     prop_dec
         , testProperty "6_is_if"       prop_6_is_if
+        , testProperty "fas_induct"    prop_fas_induct
         , testCase     "10_hint_crash" test_hint_crash
         , testCase     "eval_strict"   test_eval_strict
         ]

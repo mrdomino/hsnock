@@ -16,4 +16,6 @@ repl = do ln <- readline "nock "
                            Right n -> ep n
                          repl
   where
-    ep n = (print . nock) n `C.catch` (\e -> print (e :: C.SomeException))
+    ep n = case nock n of
+      Left e -> putStrLn $ "error: " ++ e
+      Right n -> print n

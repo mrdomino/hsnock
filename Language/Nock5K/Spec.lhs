@@ -1,5 +1,6 @@
 
 > module Language.Nock5K.Spec where
+> import Control.Monad.Instances
 
 1 Structures
 
@@ -7,13 +8,14 @@
   A cell is an ordered pair of nouns.
 
 > data Noun = Atom Integer | Noun :- Noun deriving (Eq)
+> type Comp = Either String
 
 
 2 Reductions
 
   nock(a)           *a
 
-> nock :: Noun -> Noun
+> nock :: Noun -> Comp Noun
 > nock = tar
 
   [a b c]           [a [b c]]
@@ -23,63 +25,68 @@
 
   ?[a b]            0
 
-> wut (a :- b) = Atom 0
+> wut (a :- b) = return $ Atom 0
 
   ?a                1
 
-> wut a = Atom 1
+> wut a = return $ Atom 1
 
   +[a b]            +[a b]
 
-> lus (a :- b) = error "+[a b]"
+> lus (a :- b) = Left "+[a b]"
 
   +a                1 + a
 
-> lus (Atom a) = Atom (1 + a)
+> lus (Atom a) = return $ Atom (1 + a)
 
   =[a a]            0
 
-> tis (a :- a') | a == a' = Atom 0
+> tis (a :- a') | a == a' = return $ Atom 0
 
   =[a b]            1
 
-> tis (a :- b) = Atom 1
+> tis (a :- b) = return $ Atom 1
 
   =a                =a
 
-> tis a = error "=a"
+> tis a = Left "=a"
 
 
   /[1 a]            a
 
-> fas (Atom 1 :- a) = a
+> fas (Atom 1 :- a) = return a
 
   /[2 a b]          a
 
-> fas (Atom 2 :- a :- b) = a
+> fas (Atom 2 :- a :- b) = return a
 
   /[3 a b]          b
 
-> fas (Atom 3 :- a :- b) = b
+> fas (Atom 3 :- a :- b) = return b
 
   /[(a + a) b]      /[2 /[a b]]
 
-> fas (Atom a :- b) | a > 2 && a `mod` 2 == 0 =
->   fas $ Atom 2 :- fas (Atom (a `div` 2) :- b)
+> fas (Atom a :- b) | a > 2 && a `mod` 2 == 0 = do
+>   x <- fas $ Atom (a `div` 2) :- b
+>   fas $ Atom 2 :- x
 
   /[(a + a + 1) b]  /[3 /[a b]]
 
-> fas (Atom a :- b) | a > 3 && a `mod` 2 == 1 =
->   fas $ Atom 3 :- fas (Atom (a `div` 2) :- b)
+> fas (Atom a :- b) | a > 3 && a `mod` 2 == 1 = do
+>   x <- fas $ Atom (a `div` 2) :- b
+>   fas $ Atom 3 :- x
 
   /a                /a
 
-> fas a = error "/a"
+> fas a = Left "/a"
 
 
   *[a [b c] d]      [*[a b c] *[a d]]
 
-> tar (a :- (b :- c) :- d) = tar (a :- b :- c) :- tar (a :- d)
+> tar (a :- (b :- c) :- d) = do
+>   x <- tar (a :- b :- c)
+>   y <- tar (a :- d)
+>   return $ x :- y
 
 
   *[a 0 b]          /[b a]
@@ -88,23 +95,26 @@
 
   *[a 1 b]          b
 
-> tar (a :- (Atom 1 :- b)) = b
+> tar (a :- (Atom 1 :- b)) = return b
 
   *[a 2 b c]        *[*[a b] *[a c]]
 
-> tar (a :- Atom 2 :- b :- c) = tar $ tar (a :- b) :- tar (a :- c)
+> tar (a :- Atom 2 :- b :- c) = do
+>   x <- tar (a :- b) 
+>   y <- tar (a :- c)
+>   tar $ x :- y
 
   *[a 3 b]          ?*[a b]
 
-> tar (a :- Atom 3 :- b) = (wut.tar) (a :- b)
+> tar (a :- Atom 3 :- b) = tar (a :- b) >>= wut
 
   *[a 4 b]          +*[a b]
 
-> tar (a :- Atom 4 :- b) = (lus.tar) (a :- b)
+> tar (a :- Atom 4 :- b) = tar (a :- b) >>= lus
 
   *[a 5 b]          =*[a b]
 
-> tar (a :- Atom 5 :- b) = (tis.tar) (a :- b)
+> tar (a :- Atom 5 :- b) = tar (a :- b) >>= tis
 
 
   *[a 6 b c d]      *[a 2 [0 1] 2 [1 c d] [1 0] 2 [1 2 3] [1 0] 4 4 b]
@@ -141,4 +151,4 @@
 
   *a                *a
 
-> tar a = error "*a"
+> tar a = Left "*a"

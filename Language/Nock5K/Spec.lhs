@@ -131,8 +131,8 @@
   *[a 8 b c]        *[a 7 [[7 [0 1] b] 0 1] c]
 
 > tar (a :- Atom 8 :- b :- c) =
->   tar (a :- Atom 7 :- ((Atom 7 :- (Atom 0 :- Atom 1) :- b) :-
->        Atom 0 :- Atom 1) :- c)
+>   tar (a :- Atom 7 :-
+>        ((Atom 7 :- (Atom 0 :- Atom 1) :- b) :- Atom 0 :- Atom 1) :- c)
 
   *[a 9 b c]        *[a 7 c 2 [0 1] 0 b]
 

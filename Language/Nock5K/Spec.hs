@@ -1,5 +1,6 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 module Language.Nock5K.Spec where
+import Control.Monad.Instances
 
 -- * Structures
 {-|
@@ -11,11 +12,6 @@ data Noun = Atom Integer | Noun :- Noun deriving (Eq)
 -- | Either a computed result or an error message.
 -- E.g. Nock Noun is either a Noun or an error.
 type Nock = Either String
-instance Monad Nock where
-  return = Right
-  fail = Left
-  Right n >>= f = f n
-  Left e >>= _ = Left e
 
 -- * Reductions
 nock, wut, lus, tis, fas, tar :: Noun -> Nock Noun
@@ -41,7 +37,7 @@ wut a         = return $ Atom 1
   +[a b]            +[a b]
   +a                1 + a
 @-}
-lus (a :- b)  = fail "+[a b]"
+lus (a :- b)  = Left "+[a b]"
 lus (Atom a)  = return $ Atom (1 + a)
 
 {-|@
@@ -51,7 +47,7 @@ lus (Atom a)  = return $ Atom (1 + a)
 @-}
 tis (a :- a') | a == a'  = return $ Atom 0
 tis (a :- b)             = return $ Atom 1
-tis a                    = fail "=a"
+tis a                    = Left "=a"
 
 {-|@
   \/[1 a]            a
@@ -68,7 +64,7 @@ fas (Atom a :- b) | a > 2 && a `mod` 2 == 0  = do x <- fas $ Atom (a `div` 2) :-
                                                   fas $ Atom 2 :- x
 fas (Atom a :- b) | a > 3 && a `mod` 2 == 1  = do x <- fas $ Atom (a `div` 2) :- b
                                                   fas $ Atom 3 :- x
-fas a                                        = fail "/a"
+fas a                                        = Left "/a"
 
 {-|@
   \*[a [b c] d]      [\*[a b c] \*[a d]]
@@ -118,4 +114,4 @@ tar (a :- Atom 10 :- (b :- c) :- d)  = tar (a :- Atom 8 :- c :- Atom 7 :-
                                             (Atom 0 :- Atom 3) :- d)
 tar (a :- Atom 10 :- b :- c)         = tar (a :- c)
 
-tar a                                = fail "*a"
+tar a                                = Left "*a"

@@ -18,6 +18,8 @@ instance Monad Nock where
   Left e >>= _ = Left e
 
 -- * Reductions
+nock, wut, lus, tis, fas, tar :: Noun -> Nock Noun
+
 {-|@
   nock(a)           *a
 @-}
@@ -27,8 +29,6 @@ nock = tar
   [a b c]           [a [b c]]
 -}
 infixr 1 :-
-
-nock, wut, lus, tis, fas, tar :: Noun -> Nock Noun
 
 {-|@
   ?[a b]            0

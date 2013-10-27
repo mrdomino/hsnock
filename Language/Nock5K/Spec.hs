@@ -2,44 +2,51 @@ module Language.Nock5K.Spec where
 import Control.Monad.Instances
 
 -- * Structures
-{-|
+{-| #spec-l3#
   A noun is an atom or a cell.  An atom is any natural number.
   A cell is an ordered pair of nouns.
 -}
 data Noun = Atom Integer | Noun :- Noun deriving (Eq)
 
--- | Either a computed result or an error message.
--- E.g. Nock Noun is either a Noun or an error.
+-- | Monad representing either a computed result or an error message.
 type Nock = Either String
 
 -- * Reductions
 nock, wut, lus, tis, fas, tar :: Noun -> Nock Noun
 
-{-|@
+{-| #spec-l8#
+
+@
   nock(a)           *a
 @-}
 nock = tar
 
-{-
+{- spec-l9
   [a b c]           [a [b c]]
 -}
 infixr 1 :-
 
-{-|@
+{-| #spec-l11#
+
+@
   ?[a b]            0
   ?a                1
 @-}
 wut (a :- b)  = return $ Atom 0
 wut a         = return $ Atom 1
 
-{-|@
+{-| #spec-l13#
+
+@
   +[a b]            +[a b]
   +a                1 + a
 @-}
 lus (a :- b)  = Left "+[a b]"
 lus (Atom a)  = return $ Atom (1 + a)
 
-{-|@
+{-| #spec-l15#
+
+@
   =[a a]            0
   =[a b]            1
   =a                =a
@@ -48,7 +55,9 @@ tis (a :- a') | a == a'  = return $ Atom 0
 tis (a :- b)             = return $ Atom 1
 tis a                    = Left "=a"
 
-{-|@
+{-| #spec-l19#
+
+@
   \/[1 a]            a
   \/[2 a b]          a
   \/[3 a b]          b
@@ -63,7 +72,9 @@ fas (Atom a :- b) | a > 3  = do  x <- fas $ Atom (a `div` 2) :- b
                                  fas $ Atom (2 + (a `mod` 2)) :- x
 fas a                      = Left "/a"
 
-{-|@
+{-| #spec-l26#
+
+@
   \*[a [b c] d]      [\*[a b c] \*[a d]]
 
 \  \*[a 0 b]          \/[b a]

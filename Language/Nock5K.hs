@@ -1,5 +1,5 @@
-module Language.Nock5K (Noun(Atom, (:-)), Nock, nock, noun, repl) where
+module Language.Nock5K where
 
-import Language.Nock5K.Parse
-import Language.Nock5K.Repl
-import Language.Nock5K.Spec
+import Language.Nock5K.Parse (noun)
+import Language.Nock5K.Repl (repl)
+import Language.Nock5K.Spec (Noun(..), Nock, nock)

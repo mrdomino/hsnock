@@ -6,7 +6,7 @@ import Control.Monad.Instances
   A noun is an atom or a cell.  An atom is any natural number.
   A cell is an ordered pair of nouns.
 -}
-data Noun = Atom Integer | Noun :- Noun deriving (Eq)
+data Noun = Atom !Integer | !Noun :- !Noun deriving (Eq)
 
 -- | Monad representing either a computed result or an error message.
 type Nock = Either String

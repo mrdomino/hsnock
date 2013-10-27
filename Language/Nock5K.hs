@@ -1,4 +1,4 @@
-module Language.Nock5K where
+module Language.Nock5K (Noun(..), Nock, nock, noun, repl) where
 
 import Language.Nock5K.Parse (noun)
 import Language.Nock5K.Repl (repl)

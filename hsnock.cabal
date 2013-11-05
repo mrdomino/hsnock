@@ -1,11 +1,23 @@
 name                 : hsnock
-version              : 0.5.0
+version              : 0.5.1
 category             : Language
 license              : PublicDomain
 synopsis             : Nock 5K interpreter.
 author               : Steven Dee
 maintainer           : mrdomino@gmail.com
 homepage             : https://github.com/mrdomino/hsnock/
+description          :
+  This is an implementation of the Nock 5K spec with an accompanying
+  interpreter.
+  .
+  Nock is a tiny stateless virtual machine that can be thought of
+  as a functional assembly language. Nock is the lowest layer in
+  the Urbit stack. On top of it rests the Hoon language, in which
+  the Arvo OS is written.
+  .
+  More on Urbit: <http://www.urbit.org/>
+  .
+  More on Nock: <http://www.urbit.org/2013/08/22/Chapter-2-nock.html>
 
 build-type           : Simple
 cabal-version        : >=1.8
